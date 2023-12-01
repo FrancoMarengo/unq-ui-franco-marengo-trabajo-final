@@ -1,0 +1,29 @@
+.submarine {
+    width: 100;
+    height: 120px;
+    size: 100px;
+    clip-path: fill-box;
+}
+
+.boat {
+    height: 90px;
+    padding-left: 40px;
+    clip-path: fill-box;
+}
+
+.carrier {
+    height: 140px;
+    width: 200px;
+    clip-path: fill-box;
+}
+
+.cruise {
+    height: 130px;
+    width: 180px;
+    padding-left: 40px;
+    clip-path: fill-box;
+}
+
+.generalContainerGBoard {
+    display: flex;
+}

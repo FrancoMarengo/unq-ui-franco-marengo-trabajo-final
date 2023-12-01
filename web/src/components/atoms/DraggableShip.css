@@ -1,0 +1,13 @@
+.imageDragg {
+    height: 80px;
+    margin-left: 20px;
+}
+
+.generalContainerDragg {
+    display: grid;
+}
+
+.textDragg {
+    text-align: center;
+    margin-left: 15px;
+}
