@@ -7,16 +7,16 @@ import './PreGameScreen.css'
 const PreGameScreen = () => {
 
 
-    return (
-        <DndProvider backend={HTML5Backend}>
-          <div className='generalContainerPGScreen'>
-          <h1>Preparate para la batalla, posiciona tus barcos</h1>
-          <div className='boardContainerPGScreen'> 
-            <GameBoard />
-          </div>
-          </div>
-        </DndProvider>
-      );
+  return (
+    <DndProvider backend={HTML5Backend}>
+      <div className='generalContainerPGScreen'>
+        <h1>Preparate para la batalla, posiciona tus barcos</h1>
+        <div className='boardContainerPGScreen'>
+          <GameBoard />
+        </div>
+      </div>
+    </DndProvider>
+  );
 };
 
 export default PreGameScreen;
