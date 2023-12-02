@@ -1,11 +1,17 @@
 import React from 'react';
 import { useDrop } from 'react-dnd';
 
-const GridCell = ({ onDrop, children, isOccupied}) => {
+const GridCell = ({ onDrop, onDragOver, children, isOccupied, isHighlighted}) => {
   const [, drop] = useDrop({
     accept: 'ship',
     drop: (item) => onDrop(item),
   });
+
+  const backgroundColor = isOccupied
+  ? isHighlighted
+    ? 'red'
+    : '#C5D9F0'   // Color cuando está solo ocupado
+  : isHighlighted ? 'lightgreen' : '#CAE2FF'; // Color normal
 
   return (
     <div
@@ -16,9 +22,10 @@ const GridCell = ({ onDrop, children, isOccupied}) => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: isOccupied ? '#C5D9F0' : '#CAE2FF',
+        backgroundColor: backgroundColor,
       }}
       ref={drop}
+      onDragOver={onDragOver}
     >
       {children}
     </div>
