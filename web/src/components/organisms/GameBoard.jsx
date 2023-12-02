@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import { useNavigate } from 'react-router-dom';
 import GridCell from '../atoms/GridCell';
 import BoatShip from '../molecules/BoatShip';
 import SubmarineShip from '../molecules/SubmarineShip';
@@ -20,6 +20,7 @@ const GameBoard = () => {
   const [draggedShip, setDraggedShip] = useState(null);
   const [highlightedCells, setHighlightedCells] = useState([]);
   const [shipsRotation, setShipsRotation] = useState(0);
+  const navigate = useNavigate();
 
 
   const handleDrop = (item, index) => {
@@ -154,7 +155,20 @@ const GameBoard = () => {
   const handleRotateShips = () => {
     const newRotation = (shipsRotation + 90) % 180;
     setShipsRotation(newRotation);
+  };
 
+  const handleClearBoard = () => {
+    setGrid(Array(100).fill(null));
+    setGridWithInfo(Array(100).fill({ isOccupied: false, thereIsAShip: false }));
+  };
+
+  const navigateToNextScreen = () => {
+    console.log(grid)
+    const serializedGrid = JSON.stringify(grid);
+    const serializedGridWithInfo = JSON.stringify(gridWithInfo);
+    navigate('/GameScreen', {
+      state: { grid: serializedGrid, gridWithInfo: serializedGridWithInfo }
+    });
   };
 
   return (
@@ -179,6 +193,8 @@ const GameBoard = () => {
         <BoatShip onDrag={(item) => handleDrag(item)} rotation={shipsRotation} />
         <CarrierShip onDrag={(item) => handleDrag(item)} rotation={shipsRotation} />
         <CruiseShip onDrag={(item) => handleDrag(item)} rotation={shipsRotation} />
+        <button onClick={handleClearBoard}>Delete</button>
+        <button onClick={navigateToNextScreen}>Go to Next Screen</button>
       </div>
     </div>
   );
