@@ -60,8 +60,8 @@ const GameBoard = () => {
           }
         };
       } else {
-        if ((index - 10 * (item.cellsToBack + 1)) / 10 > 0) { //No toca la parte de arriba
-          if ((index + 10 * (item.cellsToFront + 1)) / 10 >= 9) { //Toca la parte de abajo
+        if (Math.floor((index - 10 * item.cellsToBack) / 10) > 0) { //No toca la parte de arriba
+          if ((index + 10 * item.cellsToFront) / 10 >= 9) { //Toca la parte de abajo
             start = index - 10 * (item.cellsToBack + 1);
             end = index + 10 * item.cellsToFront;
             gridCellsWithShip = Array.from({ length: (end - start - 10) / 10 + 1 }, (_, index) => start + 10 + index * 10);
@@ -77,14 +77,32 @@ const GameBoard = () => {
         };
 
         for (let i = start; i <= end; i += 10) {
-          if (gridCellsWithShip.includes(i)) {
-            newgridWithInfo[i] = { isOccupied: true, thereIsAShip: true }
-            newgridWithInfo[i - 1] = { isOccupied: true, thereIsAShip: false }
-            newgridWithInfo[i + 1] = { isOccupied: true, thereIsAShip: false }
+          if (i % 10 == 9) {
+            if (gridCellsWithShip.includes(i)) {
+              newgridWithInfo[i] = { isOccupied: true, thereIsAShip: true }
+              newgridWithInfo[i - 1] = { isOccupied: true, thereIsAShip: false }
+            } else {
+              newgridWithInfo[i] = { isOccupied: true, thereIsAShip: false }
+              newgridWithInfo[i - 1] = { isOccupied: true, thereIsAShip: false }
+            }
+          } else if (i % 10 == 0) {
+            if (gridCellsWithShip.includes(i)) {
+              newgridWithInfo[i] = { isOccupied: true, thereIsAShip: true }
+              newgridWithInfo[i + 1] = { isOccupied: true, thereIsAShip: false }
+            } else {
+              newgridWithInfo[i] = { isOccupied: true, thereIsAShip: false }
+              newgridWithInfo[i + 1] = { isOccupied: true, thereIsAShip: false }
+            }
           } else {
-            newgridWithInfo[i] = { isOccupied: true, thereIsAShip: false }
-            newgridWithInfo[i - 1] = { isOccupied: true, thereIsAShip: false }
-            newgridWithInfo[i + 1] = { isOccupied: true, thereIsAShip: false }
+            if (gridCellsWithShip.includes(i)) {
+              newgridWithInfo[i] = { isOccupied: true, thereIsAShip: true }
+              newgridWithInfo[i - 1] = { isOccupied: true, thereIsAShip: false }
+              newgridWithInfo[i + 1] = { isOccupied: true, thereIsAShip: false }
+            } else {
+              newgridWithInfo[i] = { isOccupied: true, thereIsAShip: false }
+              newgridWithInfo[i - 1] = { isOccupied: true, thereIsAShip: false }
+              newgridWithInfo[i + 1] = { isOccupied: true, thereIsAShip: false }
+            }
           }
         };
       }
@@ -111,7 +129,7 @@ const GameBoard = () => {
 
     if (notOutOfGrid && notOccupiedrange) {
 
-      newGrid[index] = <img src={item.img} className={item.type} style={{ transform: `rotate(${shipsRotation}deg)` }} />;
+      newGrid[index] = <img src={item.img} className={item.type} style={{ transform: `rotate(${shipsRotation}deg)` }} draggable={false} />;
       setOccupiedRange();
 
     }
@@ -160,10 +178,10 @@ const GameBoard = () => {
   const handleClearBoard = () => {
     setGrid(Array(100).fill(null));
     setGridWithInfo(Array(100).fill({ isOccupied: false, thereIsAShip: false }));
+    setHighlightedCells([])
   };
 
   const navigateToNextScreen = () => {
-    console.log(grid)
     const serializedGrid = JSON.stringify(grid);
     const serializedGridWithInfo = JSON.stringify(gridWithInfo);
     navigate('/GameScreen', {
@@ -182,7 +200,7 @@ const GameBoard = () => {
               onDragOver={() => handleDragOverCell(index)}
               isOccupied={gridWithInfo[index].isOccupied || gridWithInfo[index].thereIsAShip}
               isHighlighted={highlightedCells.includes(index)}>
-              {cell && <div>{cell}</div>}
+              {cell && <div className='imageContainerGameBoard'>{cell}</div>}
             </GridCell>
           </div>
         ))}

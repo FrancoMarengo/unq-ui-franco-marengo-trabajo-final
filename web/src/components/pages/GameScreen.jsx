@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import GridCellWithout from '../atoms/GridCellWithout';
 import { useLocation } from 'react-router-dom';
+import './GameScreen.css'
 
 const GameScreen = () => {
     const location = useLocation();
@@ -33,7 +34,7 @@ const GameScreen = () => {
                             key={index}
                             isOccupied={deserializedGridWithInfo[index].isOccupied || deserializedGridWithInfo[index].thereIsAShip}
                             isHighlighted={false}>
-                            {cell ? <img src={cell.props.src} /> : <div>{cell}</div>}
+                            {cell ? <img src={cell.props.src} className={cell.props.className+"GameScreen"} style={cell.props.style} draggable={false}/> : <div>{cell}</div>}
                         </GridCellWithout>
                     </div>
                 ))}
