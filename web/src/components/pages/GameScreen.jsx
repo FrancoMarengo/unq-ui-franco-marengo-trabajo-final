@@ -1,43 +1,39 @@
-import React, { useEffect } from 'react';
-import GridCellWithout from '../atoms/GridCellWithout';
+import React from 'react';
 import { useLocation } from 'react-router-dom';
+import GameBoard from '../organisms/GameBoard';
 import './GameScreen.css'
 
 const GameScreen = () => {
     const location = useLocation();
     const { state } = location;
-    const { grid, gridWithInfo } = state || {};
+    const { grid, gridWithInfo, grid2, gridWithInfo2 } = state || {};
     const deserializedGrid = JSON.parse(grid);
     const deserializedGridWithInfo = JSON.parse(gridWithInfo);
-    console.log(deserializedGrid)
-
-    const gridStyle = {
-        display: 'grid',
-        gridTemplateColumns: 'repeat(10, 40px)',
-        gridTemplateRows: 'repeat(10, 40px)',
-        gap: '0px',
-        backgroundColor: 'white',
-    };
-
-    const generalStyle = {
-        display: 'flex',
+    const player2 = grid2 && gridWithInfo2
+    var deserializedGrid2 = []
+    var deserializedGridWithInfo2 = []
+    if (player2) {
+        deserializedGrid2 = JSON.parse(grid2);
+        deserializedGridWithInfo2 = JSON.parse(gridWithInfo2);
+    } else {
+        deserializedGrid2 = deserializedGrid;
+        deserializedGridWithInfo2 = deserializedGridWithInfo;
     }
 
-
-
     return (
-        <div style={generalStyle}>
-            <div style={gridStyle}>
-                {deserializedGrid.map((cell, index) => (
-                    <div>
-                        <GridCellWithout
-                            key={index}
-                            isOccupied={deserializedGridWithInfo[index].isOccupied || deserializedGridWithInfo[index].thereIsAShip}
-                            isHighlighted={false}>
-                            {cell ? <img src={cell.props.src} className={cell.props.className+"GameScreen"} style={cell.props.style} draggable={false}/> : <div>{cell}</div>}
-                        </GridCellWithout>
-                    </div>
-                ))}
+        <div className='generalContainerGameScreen'>
+            <div className='boardsContainerGameScreen'>
+                <GameBoard
+                    grid1={deserializedGrid}
+                    gridWithInfo1={deserializedGridWithInfo}
+                    clickeable1={false}
+                    showShips1={true}
+                    grid2={deserializedGrid2}
+                    gridWithInfo2={deserializedGridWithInfo2}
+                    clickeable2={true}
+                    showShips2={true}
+                    random={true}
+                />
             </div>
         </div>
     );

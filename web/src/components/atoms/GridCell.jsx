@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDrop } from 'react-dnd';
 
-const GridCell = ({ onDrop, onDragOver, children, isOccupied, isHighlighted}) => {
+const GridCell = ({ onDrop, onDragOver, children, isOccupied, isHighlighted }) => {
   const [, drop] = useDrop({
     accept: 'ship',
     drop: (item) => onDrop(item),

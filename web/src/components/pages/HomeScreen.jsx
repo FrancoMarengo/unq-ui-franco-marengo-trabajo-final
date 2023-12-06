@@ -1,7 +1,7 @@
 import React from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import GameBoard from '../organisms/GameBoard';
+import PreGameBoard from '../organisms/PreGameBoard';
 
 const HomeScreen = () => {
 
@@ -10,7 +10,7 @@ const HomeScreen = () => {
         <DndProvider backend={HTML5Backend}>
           <div>
             <h1>Juego de Batalla Naval</h1>
-            <GameBoard />
+            <PreGameBoard />
           </div>
         </DndProvider>
       );

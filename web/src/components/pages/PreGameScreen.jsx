@@ -1,7 +1,7 @@
 import React from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import GameBoard from '../organisms/GameBoard';
+import PreGameBoard from '../organisms/PreGameBoard';
 import './PreGameScreen.css'
 
 const PreGameScreen = () => {
@@ -12,7 +12,7 @@ const PreGameScreen = () => {
       <div className='generalContainerPGScreen'>
         <h1>Preparate para la batalla, posiciona tus barcos</h1>
         <div className='boardContainerPGScreen'>
-          <GameBoard />
+          <PreGameBoard secondPlayer={false}/>
         </div>
       </div>
     </DndProvider>

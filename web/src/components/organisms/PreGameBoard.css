@@ -1,0 +1,37 @@
+.submarine {
+    width: 100;
+    height: 120px;
+    size: 100px;
+    clip-path: fill-box;
+    pointer-events: none;
+}
+
+.boat {
+    height: 90px;
+    padding-left: 40px;
+    clip-path: fill-box;
+    pointer-events: none;
+}
+
+.carrier {
+    height: 140px;
+    width: 200px;
+    clip-path: fill-box;
+    pointer-events: none;
+}
+
+.cruise {
+    height: 130px;
+    width: 180px;
+    padding-left: 40px;
+    clip-path: fill-box;
+    pointer-events: none;
+}
+
+.generalContainerGBoard {
+    display: flex;
+}
+
+.imageContainerGameBoard {
+    pointer-events: none;
+}

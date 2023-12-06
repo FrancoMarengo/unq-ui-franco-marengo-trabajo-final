@@ -1,37 +1,55 @@
-.submarine {
+.submarineGameBoard {
     width: 100;
     height: 120px;
     size: 100px;
     clip-path: fill-box;
+    position: absolute;
     pointer-events: none;
 }
 
-.boat {
+.boatGameBoard {
     height: 90px;
     padding-left: 40px;
     clip-path: fill-box;
+    position: absolute;
     pointer-events: none;
 }
 
-.carrier {
+.carrierGameBoard {
     height: 140px;
     width: 200px;
     clip-path: fill-box;
+    position: absolute;
     pointer-events: none;
+    z-index: 1;
 }
 
-.cruise {
+.cruiseGameBoard {
     height: 130px;
     width: 180px;
     padding-left: 40px;
     clip-path: fill-box;
+    position: absolute;
     pointer-events: none;
 }
 
-.generalContainerGBoard {
-    display: flex;
+.explosion-iconGameBoard {
+    align-self: stretch;
+    position: sticky;
+    z-index: 3;
+    background-size: cover;
+    width: 40px;
+    height: 40px;
+    animation: fadeIn 1s ease-in-out;
+    top: 0;
+    left: 0;
 }
 
-.imageContainerGameBoard {
-    pointer-events: none;
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
 }
