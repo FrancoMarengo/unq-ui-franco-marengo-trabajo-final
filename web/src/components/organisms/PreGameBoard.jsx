@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import GridCell from '../atoms/GridCell';
 import BoatShip from '../molecules/BoatShip';
@@ -18,7 +18,7 @@ const PreGameBoard = ({ secondPlayer }) => {
   const [grid, setGrid] = useState(Array(100).fill(null));
   const [gridWithInfo, setGridWithInfo] = useState(Array(100).fill({ isOccupied: false, thereIsAShip: false }));
   const [grid2, setGrid2] = useState(Array(100).fill(null));
-  const [gridWithInfo2, setGridWithInfo2] = useState(Array(100).fill({ isOccupied: false, thereIsAShip: false }));
+  var gridWithInfo2 = Array(100).fill({ isOccupied: false, thereIsAShip: false });
   const [draggedShip, setDraggedShip] = useState(null);
   const [highlightedCells, setHighlightedCells] = useState([]);
   const [highlightedCells2, setHighlightedCells2] = useState([]);
@@ -26,6 +26,168 @@ const PreGameBoard = ({ secondPlayer }) => {
   const [shipsRotation2, setShipsRotation2] = useState(0);
   const [turnOfPlayer2, setTurnOfPlayer2] = useState(false)
   const navigate = useNavigate();
+
+
+
+
+  function randomizeShips() {
+    const availableShips = [
+      { length: 2, cellsToBack: 0, cellsToFront: 1, shipRotation: (Math.round(Math.random()) * 90) },
+      { length: 3, cellsToBack: 1, cellsToFront: 1, shipRotation: (Math.round(Math.random()) * 90) },
+      { length: 5, cellsToBack: 2, cellsToFront: 2, shipRotation: (Math.round(Math.random()) * 90) },
+      { length: 4, cellsToBack: 1, cellsToFront: 2, shipRotation: (Math.round(Math.random()) * 90) }
+    ]
+    for (let i = 0; i < availableShips.length; i++) {
+      const shipDetails = availableShips[i];
+      var randomNumber = 0;
+      var validPos = false;
+      if (shipDetails.shipRotation === 0) {
+        do {
+          randomNumber = Math.floor(Math.random() * 100);
+          validPos = checkValid(shipDetails, randomNumber);
+        } while (Math.floor(((randomNumber - shipDetails.cellsToBack) / 10) !== Math.floor((randomNumber + shipDetails.cellsToFront) / 10)) && !validPos);
+      } else {
+        do {
+          randomNumber = Math.floor(Math.random() * 100);
+          validPos = checkValid(shipDetails, randomNumber);
+        } while ((randomNumber - (10 * shipDetails.cellsToBack) < 0 || randomNumber + (10 * shipDetails.cellsToFront) > 99) && !validPos);
+      }
+      setOccupiedRanges(randomNumber, shipDetails);
+    }
+  }
+
+  function checkValid(ship, index) {
+    var start = 0;
+    var end = 0;
+    var gridCellsWithShip = [];
+    var check = true;
+    if (ship.shipRotation === 0) {
+      if ((index - ship.cellsToBack) % 10 !== 0) {
+        if ((index + (ship.cellsToFront + 1)) % 10 === 0) {
+          start = index - (ship.cellsToBack + 1);
+          end = index + ship.cellsToFront;
+          gridCellsWithShip = Array.from({ length: end - start }, (_, index) => start + index + 1);
+        } else {
+          start = index - (ship.cellsToBack + 1);
+          end = index + (ship.cellsToFront + 1);
+          gridCellsWithShip = Array.from({ length: end - start - 1 }, (_, index) => start + index + 1);
+        };
+      } else {
+        start = index - ship.cellsToBack;
+        end = index + (ship.cellsToFront + 1);
+        gridCellsWithShip = Array.from({ length: end - start }, (_, index) => start + index);
+      };
+      for (let i = start; end >= i; i++) {
+        check = check && !gridWithInfo2[i].isOccupied
+      }
+      return check;
+    } else {
+      if (Math.floor((index - 10 * ship.cellsToBack) / 10) > 0) { //No toca la parte de arriba
+        if ((index + 10 * ship.cellsToFront) / 10 >= 9) { //Toca la parte de abajo
+          start = index - 10 * (ship.cellsToBack + 1);
+          end = index + 10 * ship.cellsToFront;
+          gridCellsWithShip = Array.from({ length: (end - start - 10) / 10 + 1 }, (_, index) => start + 10 + index * 10);
+        } else {
+          start = index - 10 * (ship.cellsToBack + 1);
+          end = index + 10 * (ship.cellsToFront + 1);
+          gridCellsWithShip = Array.from({ length: (end - start - 10) / 10 }, (_, index) => start + 10 + index * 10);
+        };
+      } else {
+        start = index - 10 * ship.cellsToBack;
+        end = index + 10 * (ship.cellsToFront + 1);
+        gridCellsWithShip = Array.from({ length: (end - start) / 10 }, (_, index) => start + index * 10);
+      };
+      for (let i = start; end >= i; i+=10) {
+        check = check && !gridWithInfo2[i].isOccupied
+      }
+      return check
+    }
+  }
+
+  function setOccupiedRanges(index, ship) {
+    var start = 0;
+    var end = 0;
+    var gridCellsWithShip = [];
+    const newDeserializedGridWithInfo2 = { ...gridWithInfo2 };
+    if (ship.shipRotation === 0) {
+      if ((index - ship.cellsToBack) % 10 !== 0) {
+        if ((index + (ship.cellsToFront + 1)) % 10 === 0) {
+          start = index - (ship.cellsToBack + 1);
+          end = index + ship.cellsToFront;
+          gridCellsWithShip = Array.from({ length: end - start }, (_, index) => start + index + 1);
+        } else {
+          start = index - (ship.cellsToBack + 1);
+          end = index + (ship.cellsToFront + 1);
+          gridCellsWithShip = Array.from({ length: end - start - 1 }, (_, index) => start + index + 1);
+        };
+      } else {
+        start = index - ship.cellsToBack;
+        end = index + (ship.cellsToFront + 1);
+        gridCellsWithShip = Array.from({ length: end - start }, (_, index) => start + index);
+      };
+
+      for (let i = start; i <= end; i++) {
+        if (gridCellsWithShip.includes(i)) {
+          newDeserializedGridWithInfo2[i] = { isOccupied: true, thereIsAShip: true }
+          newDeserializedGridWithInfo2[i - 10] = { isOccupied: true, thereIsAShip: false }
+          newDeserializedGridWithInfo2[i + 10] = { isOccupied: true, thereIsAShip: false }
+        } else {
+          newDeserializedGridWithInfo2[i] = { isOccupied: true, thereIsAShip: false }
+          newDeserializedGridWithInfo2[i - 10] = { isOccupied: true, thereIsAShip: false }
+          newDeserializedGridWithInfo2[i + 10] = { isOccupied: true, thereIsAShip: false }
+        }
+      };
+    } else {
+      if (Math.floor((index - 10 * ship.cellsToBack) / 10) > 0) { //No toca la parte de arriba
+        if ((index + 10 * ship.cellsToFront) / 10 >= 9) { //Toca la parte de abajo
+          start = index - 10 * (ship.cellsToBack + 1);
+          end = index + 10 * ship.cellsToFront;
+          gridCellsWithShip = Array.from({ length: (end - start - 10) / 10 + 1 }, (_, index) => start + 10 + index * 10);
+        } else {
+          start = index - 10 * (ship.cellsToBack + 1);
+          end = index + 10 * (ship.cellsToFront + 1);
+          gridCellsWithShip = Array.from({ length: (end - start - 10) / 10 }, (_, index) => start + 10 + index * 10);
+        };
+      } else {
+        start = index - 10 * ship.cellsToBack;
+        end = index + 10 * (ship.cellsToFront + 1);
+        gridCellsWithShip = Array.from({ length: (end - start) / 10 }, (_, index) => start + index * 10);
+      };
+
+      for (let i = start; i <= end; i += 10) {
+        if (i % 10 == 9) {
+          if (gridCellsWithShip.includes(i)) {
+            newDeserializedGridWithInfo2[i] = { isOccupied: true, thereIsAShip: true }
+            newDeserializedGridWithInfo2[i - 1] = { isOccupied: true, thereIsAShip: false }
+          } else {
+            newDeserializedGridWithInfo2[i] = { isOccupied: true, thereIsAShip: false }
+            newDeserializedGridWithInfo2[i - 1] = { isOccupied: true, thereIsAShip: false }
+          }
+        } else if (i % 10 == 0) {
+          if (gridCellsWithShip.includes(i)) {
+            newDeserializedGridWithInfo2[i] = { isOccupied: true, thereIsAShip: true }
+            newDeserializedGridWithInfo2[i + 1] = { isOccupied: true, thereIsAShip: false }
+          } else {
+            newDeserializedGridWithInfo2[i] = { isOccupied: true, thereIsAShip: false }
+            newDeserializedGridWithInfo2[i + 1] = { isOccupied: true, thereIsAShip: false }
+          }
+        } else {
+          if (gridCellsWithShip.includes(i)) {
+            newDeserializedGridWithInfo2[i] = { isOccupied: true, thereIsAShip: true }
+            newDeserializedGridWithInfo2[i - 1] = { isOccupied: true, thereIsAShip: false }
+            newDeserializedGridWithInfo2[i + 1] = { isOccupied: true, thereIsAShip: false }
+          } else {
+            newDeserializedGridWithInfo2[i] = { isOccupied: true, thereIsAShip: false }
+            newDeserializedGridWithInfo2[i - 1] = { isOccupied: true, thereIsAShip: false }
+            newDeserializedGridWithInfo2[i + 1] = { isOccupied: true, thereIsAShip: false }
+          }
+        }
+      };
+    }
+    console.log("el barco: " + ship.length + " ,tiene el inicio: " + index)
+    gridWithInfo2 = newDeserializedGridWithInfo2;
+  };
+
 
 
   const handleDrop = (item, index) => {
@@ -129,11 +291,11 @@ const PreGameBoard = ({ secondPlayer }) => {
     var notOccupiedrange = false
     var notOutOfGrid = false
     var shipsRotationNow = 0
-      if (!turnOfPlayer2) {
-        shipsRotationNow = shipsRotation
-      } else {
-        shipsRotationNow = shipsRotation2
-      }
+    if (!turnOfPlayer2) {
+      shipsRotationNow = shipsRotation
+    } else {
+      shipsRotationNow = shipsRotation2
+    }
 
     if (shipsRotationNow === 0) {
       const start = Math.max(0, index - item.cellsToBack);
@@ -165,7 +327,7 @@ const PreGameBoard = ({ secondPlayer }) => {
       setGrid(newGrid);
       setHighlightedCells([])
     } else {
-      setGridWithInfo2(newgridWithInfo);
+      gridWithInfo2 = newgridWithInfo;
       setGrid2(newGrid);
       setHighlightedCells2([])
     }
@@ -178,11 +340,11 @@ const PreGameBoard = ({ secondPlayer }) => {
     var isAllInGrid = false;
     var gridCellsWithShip = []
     var shipsRotationNow = 0
-      if (!turnOfPlayer2) {
-        shipsRotationNow = shipsRotation
-      } else {
-        shipsRotationNow = shipsRotation2
-      }
+    if (!turnOfPlayer2) {
+      shipsRotationNow = shipsRotation
+    } else {
+      shipsRotationNow = shipsRotation2
+    }
     if (shipsRotationNow === 0) {
       const start = index - draggedShip.cellsToBack;
       const end = index + draggedShip.cellsToFront;
@@ -205,7 +367,7 @@ const PreGameBoard = ({ secondPlayer }) => {
     } else {
       setHighlightedCells2((isAllInGrid && notOutOfGrid) ? gridCellsWithShip : []);
     }
-    
+
 
   };
 
@@ -216,10 +378,10 @@ const PreGameBoard = ({ secondPlayer }) => {
   const handleRotateShips = () => {
     if (!turnOfPlayer2) {
       const newRotation = (shipsRotation + 90) % 180;
-    setShipsRotation(newRotation);
+      setShipsRotation(newRotation);
     } else {
       const newRotation = (shipsRotation2 + 90) % 180;
-       setShipsRotation2(newRotation);
+      setShipsRotation2(newRotation);
     }
   };
 
@@ -230,10 +392,10 @@ const PreGameBoard = ({ secondPlayer }) => {
       setHighlightedCells([])
     } else {
       setGrid2(Array(100).fill(null));
-      setGridWithInfo2(Array(100).fill({ isOccupied: false, thereIsAShip: false }));
+      gridWithInfo2 = Array(100).fill({ isOccupied: false, thereIsAShip: false });
       setHighlightedCells2([])
     }
-  
+
   };
 
   const navigateToNextScreen = () => {
@@ -245,13 +407,17 @@ const PreGameBoard = ({ secondPlayer }) => {
       const serializedGrid2 = JSON.stringify(grid2);
       const serializedGridWithInfo2 = JSON.stringify(gridWithInfo2);
       navigate('/GameScreen', {
-        state: { grid: serializedGrid, gridWithInfo: serializedGridWithInfo, grid2: serializedGrid2, gridWithInfo2: serializedGridWithInfo2}
+        state: { grid: serializedGrid, gridWithInfo: serializedGridWithInfo, grid2: serializedGrid2, gridWithInfo2: serializedGridWithInfo2 }
       });
     } else {
+      randomizeShips();
       const serializedGrid = JSON.stringify(grid);
       const serializedGridWithInfo = JSON.stringify(gridWithInfo);
+      const serializedGrid2 = JSON.stringify(grid2);
+      const serializedGridWithInfo2 = JSON.stringify(gridWithInfo2);
+      console.log(serializedGridWithInfo2)
       navigate('/GameScreen', {
-        state: { grid: serializedGrid, gridWithInfo: serializedGridWithInfo }
+        state: { grid: serializedGrid, gridWithInfo: serializedGridWithInfo, grid2: serializedGrid2, gridWithInfo2: serializedGridWithInfo2 }
       });
     }
   };
@@ -268,7 +434,7 @@ const PreGameBoard = ({ secondPlayer }) => {
               isOccupied={!turnOfPlayer2 && (gridWithInfo[index].isOccupied || gridWithInfo[index].thereIsAShip)}
               isHighlighted={highlightedCells.includes(index)}
               disabled={turnOfPlayer2}
-              >
+            >
               {cell && !turnOfPlayer2 && <div className='imageContainerGameBoard'>{cell}</div>}
             </GridCell>
           </div>

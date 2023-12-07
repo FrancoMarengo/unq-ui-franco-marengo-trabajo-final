@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import GameBoard from '../organisms/GameBoard';
 import './GameScreen.css'
@@ -9,17 +9,10 @@ const GameScreen = () => {
     const { grid, gridWithInfo, grid2, gridWithInfo2 } = state || {};
     const deserializedGrid = JSON.parse(grid);
     const deserializedGridWithInfo = JSON.parse(gridWithInfo);
-    const player2 = grid2 && gridWithInfo2
-    var deserializedGrid2 = []
-    var deserializedGridWithInfo2 = []
-    if (player2) {
-        deserializedGrid2 = JSON.parse(grid2);
-        deserializedGridWithInfo2 = JSON.parse(gridWithInfo2);
-    } else {
-        deserializedGrid2 = deserializedGrid;
-        deserializedGridWithInfo2 = deserializedGridWithInfo;
-    }
+    const deserializedGrid2 = JSON.parse(grid2);
+    const deserializedGridWithInfo2 = JSON.parse(gridWithInfo2);
 
+    
     return (
         <div className='generalContainerGameScreen'>
             <div className='boardsContainerGameScreen'>
@@ -31,7 +24,7 @@ const GameScreen = () => {
                     grid2={deserializedGrid2}
                     gridWithInfo2={deserializedGridWithInfo2}
                     clickeable2={true}
-                    showShips2={true}
+                    showShips2={false}
                     random={true}
                 />
             </div>

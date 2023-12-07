@@ -10,6 +10,7 @@ const GameBoard = ({ grid1, gridWithInfo1, clickeable1, showShips1, grid2, gridW
     const [newGrid2, setNewGrid2] = useState([...grid2]);
     const [newGridWithClicksInfo2, setNewGridWithClicksInfo2] = useState(Array(100).fill({ alreadyClicked: false}));
 
+
     const gridStyle = {
         display: 'grid',
         gridTemplateColumns: 'repeat(10, 40px)',
