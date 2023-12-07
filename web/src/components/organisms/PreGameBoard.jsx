@@ -19,6 +19,7 @@ const PreGameBoard = ({ secondPlayer }) => {
   const [gridWithInfo, setGridWithInfo] = useState(Array(100).fill({ isOccupied: false, thereIsAShip: false }));
   const [grid2, setGrid2] = useState(Array(100).fill(null));
   var gridWithInfo2 = Array(100).fill({ isOccupied: false, thereIsAShip: false });
+  const [gridWithInfoP2, setGridWithInfoP2] = useState(Array(100).fill({ isOccupied: false, thereIsAShip: false }));
   const [draggedShip, setDraggedShip] = useState(null);
   const [highlightedCells, setHighlightedCells] = useState([]);
   const [highlightedCells2, setHighlightedCells2] = useState([]);
@@ -26,8 +27,6 @@ const PreGameBoard = ({ secondPlayer }) => {
   const [shipsRotation2, setShipsRotation2] = useState(0);
   const [turnOfPlayer2, setTurnOfPlayer2] = useState(false)
   const navigate = useNavigate();
-
-
 
 
   function randomizeShips() {
@@ -45,7 +44,7 @@ const PreGameBoard = ({ secondPlayer }) => {
         do {
           randomNumber = Math.floor(Math.random() * 100);
           validPos = checkValid(shipDetails, randomNumber);
-        } while ((Math.floor((randomNumber - shipDetails.cellsToBack) / 10) !== Math.floor((randomNumber + shipDetails.cellsToFront) / 10)) || ((randomNumber - shipDetails.cellsToBack) < 0 || (randomNumber +  shipDetails.cellsToFront) > 99) || !validPos);
+        } while ((Math.floor((randomNumber - shipDetails.cellsToBack) / 10) !== Math.floor((randomNumber + shipDetails.cellsToFront) / 10)) || ((randomNumber - shipDetails.cellsToBack) < 0 || (randomNumber + shipDetails.cellsToFront) > 99) || !validPos);
       } else {
         do {
           randomNumber = Math.floor(Math.random() * 100);
@@ -97,7 +96,7 @@ const PreGameBoard = ({ secondPlayer }) => {
         end = index + 10 * (ship.cellsToFront + 1);
         gridCellsWithShip = Array.from({ length: (end - start) / 10 }, (_, index) => start + index * 10);
       };
-      for (let i = start; i <= end; i+=10) {
+      for (let i = start; i <= end; i += 10) {
         check = check && i <= 99 && i >= 0 && !gridWithInfo2[i].isOccupied
       }
       return check;
@@ -184,7 +183,6 @@ const PreGameBoard = ({ secondPlayer }) => {
         }
       };
     }
-    console.log("el barco: " + ship.length + " ,tiene el inicio: " + index)
     gridWithInfo2 = newDeserializedGridWithInfo2;
   };
 
@@ -198,10 +196,10 @@ const PreGameBoard = ({ secondPlayer }) => {
       newgridWithInfo = { ...gridWithInfo };
     } else {
       newGrid = [...grid2];
-      newgridWithInfo = { ...gridWithInfo2 };
+      newgridWithInfo = { ...gridWithInfoP2 };
     }
 
-    function setOccupiedRange() {
+    const setOccupiedRange = () => {
       var start = 0;
       var end = 0;
       var gridCellsWithShip = [];
@@ -229,6 +227,7 @@ const PreGameBoard = ({ secondPlayer }) => {
         };
 
         for (let i = start; i <= end; i++) {
+          console.log("entro1")
           if (gridCellsWithShip.includes(i)) {
             newgridWithInfo[i] = { isOccupied: true, thereIsAShip: true }
             newgridWithInfo[i - 10] = { isOccupied: true, thereIsAShip: false }
@@ -257,6 +256,7 @@ const PreGameBoard = ({ secondPlayer }) => {
         };
 
         for (let i = start; i <= end; i += 10) {
+          console.log("entro2")
           if (i % 10 == 9) {
             if (gridCellsWithShip.includes(i)) {
               newgridWithInfo[i] = { isOccupied: true, thereIsAShip: true }
@@ -314,20 +314,15 @@ const PreGameBoard = ({ secondPlayer }) => {
     }
 
     if (notOutOfGrid && notOccupiedrange) {
-      if (!turnOfPlayer2) {
         newGrid[index] = <img src={item.img} className={item.type} style={{ transform: `rotate(${shipsRotation}deg)` }} draggable={false} />;
         setOccupiedRange();
-      } else {
-        newGrid[index] = <img src={item.img} className={item.type} style={{ transform: `rotate(${shipsRotation2}deg)` }} draggable={false} />;
-        setOccupiedRange();
-      }
     }
     if (!turnOfPlayer2) {
       setGridWithInfo(newgridWithInfo);
       setGrid(newGrid);
       setHighlightedCells([])
     } else {
-      gridWithInfo2 = newgridWithInfo;
+      setGridWithInfoP2(newgridWithInfo)
       setGrid2(newGrid);
       setHighlightedCells2([])
     }
@@ -405,7 +400,7 @@ const PreGameBoard = ({ secondPlayer }) => {
       const serializedGrid = JSON.stringify(grid);
       const serializedGridWithInfo = JSON.stringify(gridWithInfo);
       const serializedGrid2 = JSON.stringify(grid2);
-      const serializedGridWithInfo2 = JSON.stringify(gridWithInfo2);
+      const serializedGridWithInfo2 = JSON.stringify(gridWithInfoP2);
       navigate('/GameScreen', {
         state: { grid: serializedGrid, gridWithInfo: serializedGridWithInfo, grid2: serializedGrid2, gridWithInfo2: serializedGridWithInfo2 }
       });
@@ -415,13 +410,14 @@ const PreGameBoard = ({ secondPlayer }) => {
       const serializedGridWithInfo = JSON.stringify(gridWithInfo);
       const serializedGrid2 = JSON.stringify(grid2);
       const serializedGridWithInfo2 = JSON.stringify(gridWithInfo2);
-      console.log(serializedGridWithInfo2)
       navigate('/GameScreen', {
         state: { grid: serializedGrid, gridWithInfo: serializedGridWithInfo, grid2: serializedGrid2, gridWithInfo2: serializedGridWithInfo2 }
       });
     }
   };
 
+
+  console.log(gridWithInfo2)
   return (
     <div className='generalContainerGBoard'>
       {!turnOfPlayer2 && <div style={gridStyle}>
@@ -456,7 +452,7 @@ const PreGameBoard = ({ secondPlayer }) => {
               key={index}
               onDrop={(item) => handleDrop(item, index)}
               onDragOver={() => handleDragOverCell(index)}
-              isOccupied={gridWithInfo2[index].isOccupied || gridWithInfo2[index].thereIsAShip}
+              isOccupied={gridWithInfoP2[index].isOccupied || gridWithInfoP2[index].thereIsAShip}
               isHighlighted={highlightedCells2.includes(index)}>
               {cell && <div className='imageContainerGameBoard'>{cell}</div>}
             </GridCell>
