@@ -9,6 +9,8 @@ const GameBoard = ({ grid1, gridWithInfo1, clickeable1, showShips1, grid2, gridW
     const [newGridWithClicksInfo1, setNewGridWithClicksInfo] = useState(Array(100).fill({ alreadyClicked: false}));
     const [newGrid2, setNewGrid2] = useState([...grid2]);
     const [newGridWithClicksInfo2, setNewGridWithClicksInfo2] = useState(Array(100).fill({ alreadyClicked: false}));
+    const [turnOfPlayer1, setTurnOfPlayer1] = useState(true);
+    const [timeoutActive, setTimeoutActive] = useState(false);
 
 
     const gridStyle = {
@@ -23,7 +25,7 @@ const GameBoard = ({ grid1, gridWithInfo1, clickeable1, showShips1, grid2, gridW
     };
 
     function handleCellClick1(index) {
-        if (clickeable1) {
+        if (clickeable1 && !turnOfPlayer1 && !newGridWithClicksInfo1[index].alreadyClicked && !timeoutActive) {
             const updatedGrid = [...newGrid1];
             const updatedGridWithClicksInfo = {...newGridWithClicksInfo1}
             if (gridWithInfo1[index].thereIsAShip && !newGridWithClicksInfo1[index].alreadyClicked) {
@@ -47,11 +49,16 @@ const GameBoard = ({ grid1, gridWithInfo1, clickeable1, showShips1, grid2, gridW
                 setNewGrid(updatedGrid);
                 setNewGridWithClicksInfo(updatedGridWithClicksInfo);
             }
+            setTurnOfPlayer1(true)
+            setTimeoutActive(true)
+            setTimeout(() => {
+                setTimeoutActive(false);
+            }, 1500);
         }
     };
 
     function handleCellClick2(index) {
-        if (clickeable2) {
+        if (clickeable2 && turnOfPlayer1 && !newGridWithClicksInfo2[index].alreadyClicked && !timeoutActive) {
             const updatedGrid = [...newGrid2];
             const updatedGridWithClicksInfo = {...newGridWithClicksInfo2}
             if (gridWithInfo2[index].thereIsAShip && !newGridWithClicksInfo2[index].alreadyClicked) {
@@ -75,12 +82,17 @@ const GameBoard = ({ grid1, gridWithInfo1, clickeable1, showShips1, grid2, gridW
                 setNewGrid2(updatedGrid);
                 setNewGridWithClicksInfo2(updatedGridWithClicksInfo);
             }
-            randomClick()
+            setTurnOfPlayer1(false)
+            setTimeoutActive(true)
+            setTimeout(() => {
+                setTimeoutActive(false);
+                randomClick()
+            }, 1500);
         }
     };
 
     function randomClick() {
-        if (random) {
+        if (random && !timeoutActive) {
             var randomIndex = Math.floor(Math.random() * 100);
             while (newGridWithClicksInfo1[randomIndex].alreadyClicked) {
                 randomIndex = Math.floor(Math.random() * 100);
@@ -108,6 +120,7 @@ const GameBoard = ({ grid1, gridWithInfo1, clickeable1, showShips1, grid2, gridW
                 setNewGrid(updatedGrid);
                 setNewGridWithClicksInfo(updatedGridWithClicksInfo);
             }
+            setTurnOfPlayer1(true)
         }
     }
 
@@ -167,6 +180,11 @@ const GameBoard = ({ grid1, gridWithInfo1, clickeable1, showShips1, grid2, gridW
                     </div>
                 ))}
             </div>
+            {turnOfPlayer1 ? (
+                <p>Turn of player 1</p>
+            ) : (
+                <p>Turn of player 2</p>
+            )}
         </div>
     );
 };

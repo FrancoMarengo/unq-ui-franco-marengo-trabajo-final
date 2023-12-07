@@ -26,6 +26,9 @@ const PreGameBoard = ({ secondPlayer }) => {
   const [shipsRotation, setShipsRotation] = useState(0);
   const [shipsRotation2, setShipsRotation2] = useState(0);
   const [turnOfPlayer2, setTurnOfPlayer2] = useState(false)
+  const [shipsInfo1, setShipsInfo1] = useState(Array(4).fill({ lengthS: 0, hits: 0, shipCells: [], cellsOccupied: [] }));
+  const [shipsInfo2, setShipsInfo2] = useState(Array(4).fill({ lengthS: 0, hits: 0, shipCells: [], cellsOccupied: [] }));
+  const secondPlayerBoolean = JSON.parse(secondPlayer);
   const navigate = useNavigate();
 
 
@@ -227,7 +230,6 @@ const PreGameBoard = ({ secondPlayer }) => {
         };
 
         for (let i = start; i <= end; i++) {
-          console.log("entro1")
           if (gridCellsWithShip.includes(i)) {
             newgridWithInfo[i] = { isOccupied: true, thereIsAShip: true }
             newgridWithInfo[i - 10] = { isOccupied: true, thereIsAShip: false }
@@ -256,7 +258,6 @@ const PreGameBoard = ({ secondPlayer }) => {
         };
 
         for (let i = start; i <= end; i += 10) {
-          console.log("entro2")
           if (i % 10 == 9) {
             if (gridCellsWithShip.includes(i)) {
               newgridWithInfo[i] = { isOccupied: true, thereIsAShip: true }
@@ -314,7 +315,7 @@ const PreGameBoard = ({ secondPlayer }) => {
     }
 
     if (notOutOfGrid && notOccupiedrange) {
-        newGrid[index] = <img src={item.img} className={item.type} style={{ transform: `rotate(${shipsRotation}deg)` }} draggable={false} />;
+        newGrid[index] = <img src={item.img} className={item.type} style={{ transform: `rotate(${shipsRotationNow}deg)` }} draggable={false} />;
         setOccupiedRange();
     }
     if (!turnOfPlayer2) {
@@ -394,14 +395,17 @@ const PreGameBoard = ({ secondPlayer }) => {
   };
 
   const navigateToNextScreen = () => {
-    if (secondPlayer && !turnOfPlayer2) {
+    if (secondPlayerBoolean && !turnOfPlayer2) {
       setTurnOfPlayer2(true)
-    } else if (secondPlayer && turnOfPlayer2) {
+    } else if (secondPlayerBoolean && turnOfPlayer2) {
       const serializedGrid = JSON.stringify(grid);
       const serializedGridWithInfo = JSON.stringify(gridWithInfo);
       const serializedGrid2 = JSON.stringify(grid2);
       const serializedGridWithInfo2 = JSON.stringify(gridWithInfoP2);
-      navigate('/GameScreen', {
+      const queryParams = new URLSearchParams({
+        twoPlayers: true,
+      });
+      navigate(`/GameScreen?${queryParams.toString()}`, {
         state: { grid: serializedGrid, gridWithInfo: serializedGridWithInfo, grid2: serializedGrid2, gridWithInfo2: serializedGridWithInfo2 }
       });
     } else {
@@ -410,14 +414,16 @@ const PreGameBoard = ({ secondPlayer }) => {
       const serializedGridWithInfo = JSON.stringify(gridWithInfo);
       const serializedGrid2 = JSON.stringify(grid2);
       const serializedGridWithInfo2 = JSON.stringify(gridWithInfo2);
-      navigate('/GameScreen', {
+      const queryParams = new URLSearchParams({
+        twoPlayers: false,
+      });
+      navigate(`/GameScreen?${queryParams.toString()}`, {
         state: { grid: serializedGrid, gridWithInfo: serializedGridWithInfo, grid2: serializedGrid2, gridWithInfo2: serializedGridWithInfo2 }
       });
     }
   };
 
 
-  console.log(gridWithInfo2)
   return (
     <div className='generalContainerGBoard'>
       {!turnOfPlayer2 && <div style={gridStyle}>
@@ -445,7 +451,7 @@ const PreGameBoard = ({ secondPlayer }) => {
         <button onClick={handleClearBoard}>Delete</button>
         <button onClick={navigateToNextScreen}>Go to Next Screen</button>
       </div>}
-      {secondPlayer && turnOfPlayer2 && <div style={gridStyle}>
+      {secondPlayerBoolean && turnOfPlayer2 && <div style={gridStyle}>
         {grid2.map((cell, index) => (
           <div>
             <GridCell
@@ -459,7 +465,7 @@ const PreGameBoard = ({ secondPlayer }) => {
           </div>
         ))}
       </div>}
-      {secondPlayer && turnOfPlayer2 && <div>
+      {secondPlayerBoolean && turnOfPlayer2 && <div>
         <button onClick={handleRotateShips}>Rotate</button>
         <SubmarineShip onDrag={(item) => handleDrag(item)} rotation={shipsRotation2} />
         <BoatShip onDrag={(item) => handleDrag(item)} rotation={shipsRotation2} />
