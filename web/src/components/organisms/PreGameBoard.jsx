@@ -45,12 +45,16 @@ const PreGameBoard = ({ secondPlayer }) => {
         do {
           randomNumber = Math.floor(Math.random() * 100);
           validPos = checkValid(shipDetails, randomNumber);
-        } while (Math.floor(((randomNumber - shipDetails.cellsToBack) / 10) !== Math.floor((randomNumber + shipDetails.cellsToFront) / 10)) && !validPos);
+          console.log("NUEVONUEVONUEVO")
+          console.log(Math.floor((randomNumber - shipDetails.cellsToBack) / 10) !== Math.floor((randomNumber + shipDetails.cellsToFront) / 10))
+          console.log((randomNumber - (10 * shipDetails.cellsToBack) < 0 || randomNumber + (10 * shipDetails.cellsToFront) > 99))
+          console.log(!validPos)
+        } while ((Math.floor((randomNumber - shipDetails.cellsToBack) / 10) !== Math.floor((randomNumber + shipDetails.cellsToFront) / 10)) || ((randomNumber - shipDetails.cellsToBack) < 0 || (randomNumber +  shipDetails.cellsToFront) > 99) || !validPos);
       } else {
         do {
           randomNumber = Math.floor(Math.random() * 100);
           validPos = checkValid(shipDetails, randomNumber);
-        } while ((randomNumber - (10 * shipDetails.cellsToBack) < 0 || randomNumber + (10 * shipDetails.cellsToFront) > 99) && !validPos);
+        } while ((randomNumber - (10 * shipDetails.cellsToBack) < 0 || randomNumber + (10 * shipDetails.cellsToFront) > 99) || !validPos);
       }
       setOccupiedRanges(randomNumber, shipDetails);
     }
@@ -77,8 +81,17 @@ const PreGameBoard = ({ secondPlayer }) => {
         end = index + (ship.cellsToFront + 1);
         gridCellsWithShip = Array.from({ length: end - start }, (_, index) => start + index);
       };
-      for (let i = start; end >= i; i++) {
-        check = check && !gridWithInfo2[i].isOccupied
+      for (let i = start; i <= Math.min(end, 99); i++) {
+        console.log("BUCLEBUCLEBUCLE")
+        console.log("index: " + i)
+        console.log("end: "+end)
+        check = check && i <= 99 && i >= 0 && !gridWithInfo2[i].isOccupied
+        console.log(i <= 99)
+        console.log(i >= 0)
+        if (i <= 99 && i >= 0 ) {
+          console.log("bool: "+ !gridWithInfo2[i].isOccupied)
+        }
+
       }
       return check;
     } else {
@@ -97,10 +110,10 @@ const PreGameBoard = ({ secondPlayer }) => {
         end = index + 10 * (ship.cellsToFront + 1);
         gridCellsWithShip = Array.from({ length: (end - start) / 10 }, (_, index) => start + index * 10);
       };
-      for (let i = start; end >= i; i+=10) {
-        check = check && !gridWithInfo2[i].isOccupied
+      for (let i = start; i <= end; i+=10) {
+        check = check && i <= 99 && i >= 0 && !gridWithInfo2[i].isOccupied
       }
-      return check
+      return check;
     }
   }
 
