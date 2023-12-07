@@ -4,6 +4,7 @@
     align-content: center;
     align-self: center;
     justify-items: center;
+    transition: background-image 0.5s ease;
 }
 
 .boardsContainerGameScreen {

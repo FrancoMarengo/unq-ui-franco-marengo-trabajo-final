@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import GameBoard from '../organisms/GameBoard';
+import game2 from '../atoms/img/game2.jpg'
+import game3 from '../atoms/img/game3.jpg'
+import game4 from '../atoms/img/game4.jpg'
+import game5 from '../atoms/img/game5.jpg'
 import './GameScreen.css'
 
 const GameScreen = () => {
@@ -16,8 +20,35 @@ const GameScreen = () => {
     const secondPlayer = queryParams.get('twoPlayers');
     const secondPlayerBoolean = JSON.parse(secondPlayer);
 
+    const [currentBackground, setCurrentBackground] = useState(0);
+    const backgroundsUrls = [`url(${game4})`,`url(${game5})`, `url(${game2})`, `url(${game3})`];
+
+    var screenWidth = window.innerWidth;
+    var screenHeight = window.innerHeight;
+
+  useEffect(() => {
+    const handleResize = () => {
+      screenWidth = window.innerWidth;
+      screenHeight = window.innerHeight;
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [screenHeight, screenWidth]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentBackground((prevBackground) => (prevBackground + 1) % backgroundsUrls.length);
+    }, 10000);
+
+    return () => clearInterval(interval);
+  }, []);
+
     return (
-        <div className='generalContainerGameScreen'>
+        <div className='generalContainerGameScreen' style={{ backgroundImage: backgroundsUrls[currentBackground], height: screenHeight, width: screenWidth, backgroundSize: 'cover', transition: 'background-image 1s ease-out 0.1s'}}>
             <div className='boardsContainerGameScreen'>
                 <GameBoard
                     grid1={deserializedGrid}

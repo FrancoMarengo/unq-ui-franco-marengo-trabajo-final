@@ -1,0 +1,26 @@
+
+.homeScreenContainer {
+    background-image: url('../atoms/img/imagenBarco.jpg');
+    background-size: 100%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.homeScreenMenuContainer {
+    margin-top: 100px;
+}
+
+.homeScreenMenuContainer h1 {
+    font-size: 80px;
+    color: white;
+    font-family: 'Creepster', sans-serif; 
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); 
+    letter-spacing: 2px; 
+    line-height: 1.2;
+}
+
+.buttonsContainerHS button {
+    margin-right: 30px;
+}

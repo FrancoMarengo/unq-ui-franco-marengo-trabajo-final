@@ -1,3 +1,29 @@
+
+.generalContainerGB {
+    display: table;
+    align-self: center;
+    align-items: center;
+}
+
+.generalContainerGB h1 {
+    font-size: 50px;
+    color: white;
+    font-family: 'Creepster', sans-serif; 
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); 
+    letter-spacing: 2px; 
+    line-height: 1.2;
+    text-align: center;
+}
+.generalContainerGB p {
+    font-size: 20px;
+    color: white;
+    font-family: 'Creepster', sans-serif; 
+    text-shadow: 2px 2px 4px rgba(255, 29, 29, 0.9); 
+    letter-spacing: 2px; 
+    line-height: 1.2;
+    text-align: center;
+}
+
 .submarineGameBoard {
     width: 100;
     height: 120px;

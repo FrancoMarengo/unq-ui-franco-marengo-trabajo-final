@@ -5,6 +5,9 @@ import BoatShip from '../molecules/BoatShip';
 import SubmarineShip from '../molecules/SubmarineShip';
 import CarrierShip from '../molecules/CarrierShip';
 import CruiseShip from '../molecules/CruiseShip';
+import Button from '../atoms/Button';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faRotate } from '@fortawesome/free-solid-svg-icons';
 import './PreGameBoard.css'
 
 const gridStyle = {
@@ -26,8 +29,6 @@ const PreGameBoard = ({ secondPlayer }) => {
   const [shipsRotation, setShipsRotation] = useState(0);
   const [shipsRotation2, setShipsRotation2] = useState(0);
   const [turnOfPlayer2, setTurnOfPlayer2] = useState(false)
-  const [shipsInfo1, setShipsInfo1] = useState(Array(4).fill({ lengthS: 0, hits: 0, shipCells: [], cellsOccupied: [] }));
-  const [shipsInfo2, setShipsInfo2] = useState(Array(4).fill({ lengthS: 0, hits: 0, shipCells: [], cellsOccupied: [] }));
   const secondPlayerBoolean = JSON.parse(secondPlayer);
   const navigate = useNavigate();
 
@@ -315,8 +316,8 @@ const PreGameBoard = ({ secondPlayer }) => {
     }
 
     if (notOutOfGrid && notOccupiedrange) {
-        newGrid[index] = <img src={item.img} className={item.type} style={{ transform: `rotate(${shipsRotationNow}deg)` }} draggable={false} />;
-        setOccupiedRange();
+      newGrid[index] = <img src={item.img} className={item.type} style={{ transform: `rotate(${shipsRotationNow}deg)` }} draggable={false} />;
+      setOccupiedRange();
     }
     if (!turnOfPlayer2) {
       setGridWithInfo(newgridWithInfo);
@@ -425,55 +426,63 @@ const PreGameBoard = ({ secondPlayer }) => {
 
 
   return (
-    <div className='generalContainerGBoard'>
-      {!turnOfPlayer2 && <div style={gridStyle}>
-        {grid.map((cell, index) => (
-          <div>
-            <GridCell
-              key={index}
-              onDrop={(item) => handleDrop(item, index)}
-              onDragOver={() => handleDragOverCell(index)}
-              isOccupied={!turnOfPlayer2 && (gridWithInfo[index].isOccupied || gridWithInfo[index].thereIsAShip)}
-              isHighlighted={highlightedCells.includes(index)}
-              disabled={turnOfPlayer2}
-            >
-              {cell && !turnOfPlayer2 && <div className='imageContainerGameBoard'>{cell}</div>}
-            </GridCell>
-          </div>
-        ))}
-      </div>}
-      {!turnOfPlayer2 && <div>
-        <button onClick={handleRotateShips}>Rotate</button>
-        <SubmarineShip onDrag={(item) => handleDrag(item)} rotation={shipsRotation} />
-        <BoatShip onDrag={(item) => handleDrag(item)} rotation={shipsRotation} />
-        <CarrierShip onDrag={(item) => handleDrag(item)} rotation={shipsRotation} />
-        <CruiseShip onDrag={(item) => handleDrag(item)} rotation={shipsRotation} />
-        <button onClick={handleClearBoard}>Delete</button>
-        <button onClick={navigateToNextScreen}>Go to Next Screen</button>
-      </div>}
-      {secondPlayerBoolean && turnOfPlayer2 && <div style={gridStyle}>
-        {grid2.map((cell, index) => (
-          <div>
-            <GridCell
-              key={index}
-              onDrop={(item) => handleDrop(item, index)}
-              onDragOver={() => handleDragOverCell(index)}
-              isOccupied={gridWithInfoP2[index].isOccupied || gridWithInfoP2[index].thereIsAShip}
-              isHighlighted={highlightedCells2.includes(index)}>
-              {cell && <div className='imageContainerGameBoard'>{cell}</div>}
-            </GridCell>
-          </div>
-        ))}
-      </div>}
-      {secondPlayerBoolean && turnOfPlayer2 && <div>
-        <button onClick={handleRotateShips}>Rotate</button>
-        <SubmarineShip onDrag={(item) => handleDrag(item)} rotation={shipsRotation2} />
-        <BoatShip onDrag={(item) => handleDrag(item)} rotation={shipsRotation2} />
-        <CarrierShip onDrag={(item) => handleDrag(item)} rotation={shipsRotation2} />
-        <CruiseShip onDrag={(item) => handleDrag(item)} rotation={shipsRotation2} />
-        <button onClick={handleClearBoard}>Delete</button>
-        <button onClick={navigateToNextScreen}>Go to Next Screen</button>
-      </div>}
+    <div>
+      {!turnOfPlayer2 ? (
+        <h3 className='turnInfoPos'>TURN OF PLAYER 1</h3>
+      ): (
+        <h3 className='turnInfoPos'>TURN OF PLAYER 2</h3>
+      )}
+      <div className='generalContainerGBoard'>
+        {!turnOfPlayer2 &&
+          <div style={gridStyle}>
+            {grid.map((cell, index) => (
+              <div>
+                <GridCell
+                  key={index}
+                  onDrop={(item) => handleDrop(item, index)}
+                  onDragOver={() => handleDragOverCell(index)}
+                  isOccupied={!turnOfPlayer2 && (gridWithInfo[index].isOccupied || gridWithInfo[index].thereIsAShip)}
+                  isHighlighted={highlightedCells.includes(index)}
+                  disabled={turnOfPlayer2}
+                >
+                  {cell && !turnOfPlayer2 && <div className='imageContainerGameBoard'>{cell}</div>}
+                </GridCell>
+              </div>
+            ))}
+          </div>}
+        {!turnOfPlayer2 && <div>
+          <FontAwesomeIcon icon={faRotate} onClick={handleRotateShips}/>
+          <SubmarineShip onDrag={(item) => handleDrag(item)} rotation={shipsRotation} />
+          <BoatShip onDrag={(item) => handleDrag(item)} rotation={shipsRotation} />
+          <CarrierShip onDrag={(item) => handleDrag(item)} rotation={shipsRotation} />
+          <CruiseShip onDrag={(item) => handleDrag(item)} rotation={shipsRotation} />
+        </div>}
+        {secondPlayerBoolean && turnOfPlayer2 && <div style={gridStyle}>
+          {grid2.map((cell, index) => (
+            <div>
+              <GridCell
+                key={index}
+                onDrop={(item) => handleDrop(item, index)}
+                onDragOver={() => handleDragOverCell(index)}
+                isOccupied={gridWithInfoP2[index].isOccupied || gridWithInfoP2[index].thereIsAShip}
+                isHighlighted={highlightedCells2.includes(index)}>
+                {cell && <div className='imageContainerGameBoard'>{cell}</div>}
+              </GridCell>
+            </div>
+          ))}
+        </div>}
+        {secondPlayerBoolean && turnOfPlayer2 && <div>
+          <FontAwesomeIcon icon={faRotate} onClick={handleRotateShips}/>
+          <SubmarineShip onDrag={(item) => handleDrag(item)} rotation={shipsRotation2} />
+          <BoatShip onDrag={(item) => handleDrag(item)} rotation={shipsRotation2} />
+          <CarrierShip onDrag={(item) => handleDrag(item)} rotation={shipsRotation2} />
+          <CruiseShip onDrag={(item) => handleDrag(item)} rotation={shipsRotation2} />
+        </div>}
+      </div>
+      <div className='buttonsContainerPGB'>
+        <Button onClick={handleClearBoard} text={"REMOVE SHIPS"} />
+        <Button onClick={navigateToNextScreen} text={"READY!"} />
+      </div>
     </div>
   );
 };

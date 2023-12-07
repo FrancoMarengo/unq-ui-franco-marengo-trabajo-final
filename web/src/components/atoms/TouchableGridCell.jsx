@@ -11,7 +11,7 @@ const TouchableGridCell = ({ children, isOccupied, onClick}) => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor:  isOccupied ? '#C5D9F0' : '#CAE2FF',
+        backgroundColor:  isOccupied ? 'rgba(197, 217, 240, 0.7)' : 'rgba(202, 226, 255, 0.3)',
       }}
       onClick={onClick}
     >

@@ -9,9 +9,9 @@ const GridCell = ({ onDrop, onDragOver, children, isOccupied, isHighlighted }) =
 
   const backgroundColor = isOccupied
   ? isHighlighted
-    ? 'red'
-    : '#C5D9F0'   // Color cuando está solo ocupado
-  : isHighlighted ? 'lightgreen' : '#CAE2FF'; // Color normal
+    ? 'rgba(255, 0, 0, 0.7)'
+    : 'rgba(197, 217, 240, 0.7)'  // Color cuando está solo ocupado
+  : isHighlighted ? 'rgba(144, 238, 144, 0.7)' : 'rgba(202, 226, 255, 0.3)'; // Color normal
 
   return (
     <div
