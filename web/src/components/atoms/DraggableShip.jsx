@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useDrag } from 'react-dnd';
 import './DraggableShip.css'
 
-const DraggableShip = ({ type, img, cellsToBack, cellsToFront, onDrag, rotation }) => {
+const DraggableShip = ({ type, img, cellsToBack, cellsToFront, onDrag, rotation, draggable }) => {
+
   const [, drag] = useDrag({
     type: 'ship',
     item: { type, img, cellsToBack, cellsToFront },
@@ -23,7 +24,7 @@ const DraggableShip = ({ type, img, cellsToBack, cellsToFront, onDrag, rotation 
 
   return (
     <div className='generalContainerDragg'>
-      <img src={img} alt={type} ref={drag} className='imageDragg' style={{ transform: `rotate(${rotation}deg)` }}/>
+      <img src={img} alt={type} ref={drag} className={'imageDragg'} style={draggable ? { transform: `rotate(${rotation}deg)`, WebkitUserDrag: 'element'} : { transform: `rotate(${rotation}deg)`, WebkitUserDrag: 'none'}}/>
       <span className='textDragg'>{type}</span>
     </div>
   );

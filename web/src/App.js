@@ -11,6 +11,7 @@ const App = () => {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={ <HomeScreen/> } /> 
+        <Route path="/HomeScreen" element={ <HomeScreen/> } /> 
         <Route path="/PreGameScreen" element ={ <PreGameScreen />} />
         <Route path="/GameScreen" element ={ <GameScreen />} />
         <Route path="/GameEndScreen" element ={ <GameEndScreen />} />

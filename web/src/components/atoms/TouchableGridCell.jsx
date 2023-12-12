@@ -1,6 +1,6 @@
 import React from 'react';
 
-const TouchableGridCell = ({ children, isOccupied, onClick}) => {
+const TouchableGridCell = ({ children, isOccupied, onClick, cursor}) => {
 
   return (
     <div
@@ -12,6 +12,7 @@ const TouchableGridCell = ({ children, isOccupied, onClick}) => {
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor:  isOccupied ? 'rgba(197, 217, 240, 0.7)' : 'rgba(202, 226, 255, 0.3)',
+        cursor: cursor ? 'pointer' : 'default'
       }}
       onClick={onClick}
     >

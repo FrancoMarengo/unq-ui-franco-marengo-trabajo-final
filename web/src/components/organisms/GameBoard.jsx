@@ -51,6 +51,7 @@ const GameBoard = ({ grid1, gridWithInfo1, clickeable1, showShips1, grid2, gridW
                 if ((player1ShipsLeft-1) === 0) {
                     const queryParams = new URLSearchParams({
                         player1Winner: false,
+                        twoPlayers: !random,
                     });
                     const preValue = player2ShipsLeft; 
                     setplayer1ShipsLeft(preValue-1)
@@ -96,6 +97,7 @@ const GameBoard = ({ grid1, gridWithInfo1, clickeable1, showShips1, grid2, gridW
                 if ((player2ShipsLeft-1) === 0) {
                     const queryParams = new URLSearchParams({
                         player1Winner: true,
+                        twoPlayers: !random,
                     });
                     const preValue = player2ShipsLeft; 
                     setplayer2ShipsLeft(preValue-1)
@@ -148,6 +150,7 @@ const GameBoard = ({ grid1, gridWithInfo1, clickeable1, showShips1, grid2, gridW
                 if ((player1ShipsLeft-1) === 0) {
                     const queryParams = new URLSearchParams({
                         player1Winner: false,
+                        twoPlayers: !random,
                     });
                     const preValue = player1ShipsLeft; 
                     setplayer1ShipsLeft(preValue-1)
@@ -185,6 +188,7 @@ const GameBoard = ({ grid1, gridWithInfo1, clickeable1, showShips1, grid2, gridW
                             <TouchableGridCell
                                 isOccupied={showShips1 && (gridWithInfo1[index].isOccupied || gridWithInfo1[index].thereIsAShip)}
                                 onClick={() => handleCellClick1(index)}
+                                cursor={!turnOfPlayer1}
                             >
                                 <>
                                     {cell ? (cell && cell.type == "div" && showShips1 ? (
@@ -212,6 +216,7 @@ const GameBoard = ({ grid1, gridWithInfo1, clickeable1, showShips1, grid2, gridW
                             <TouchableGridCell
                                 isOccupied={showShips2 && (gridWithInfo2[index].isOccupied || gridWithInfo2[index].thereIsAShip)}
                                 onClick={() => handleCellClick2(index)}
+                                cursor={turnOfPlayer1}
                             >
                                 <>
                                     {cell ? (cell && cell.type == "div" && showShips2 ? (

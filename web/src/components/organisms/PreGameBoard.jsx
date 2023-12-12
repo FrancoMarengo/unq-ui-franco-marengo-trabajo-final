@@ -30,6 +30,7 @@ const PreGameBoard = ({ secondPlayer }) => {
   const [shipsRotation2, setShipsRotation2] = useState(0);
   const [turnOfPlayer2, setTurnOfPlayer2] = useState(false)
   const secondPlayerBoolean = JSON.parse(secondPlayer);
+  const [placedShips, setPlacedShips] = useState([])
   const navigate = useNavigate();
 
 
@@ -318,6 +319,9 @@ const PreGameBoard = ({ secondPlayer }) => {
     if (notOutOfGrid && notOccupiedrange) {
       newGrid[index] = <img src={item.img} className={item.type} style={{ transform: `rotate(${shipsRotationNow}deg)` }} draggable={false} />;
       setOccupiedRange();
+      const newPlacedShips = [...placedShips];
+      newPlacedShips.push(item.type)
+      setPlacedShips(newPlacedShips);
     }
     if (!turnOfPlayer2) {
       setGridWithInfo(newgridWithInfo);
@@ -329,7 +333,6 @@ const PreGameBoard = ({ secondPlayer }) => {
       setHighlightedCells2([])
     }
     setDraggedShip(null)
-
   };
 
   const handleDragOverCell = (index) => {
@@ -391,14 +394,16 @@ const PreGameBoard = ({ secondPlayer }) => {
       setGrid2(Array(100).fill(null));
       gridWithInfo2 = Array(100).fill({ isOccupied: false, thereIsAShip: false });
       setHighlightedCells2([])
+      setGridWithInfoP2(Array(100).fill({ isOccupied: false, thereIsAShip: false }))
     }
-
+    setPlacedShips([]);
   };
 
   const navigateToNextScreen = () => {
-    if (secondPlayerBoolean && !turnOfPlayer2) {
-      setTurnOfPlayer2(true)
-    } else if (secondPlayerBoolean && turnOfPlayer2) {
+    if (secondPlayerBoolean && !turnOfPlayer2 && placedShips.length === 4) {
+      setPlacedShips([]);
+      setTurnOfPlayer2(true);
+    } else if (secondPlayerBoolean && turnOfPlayer2 && placedShips.length == 4) {
       const serializedGrid = JSON.stringify(grid);
       const serializedGridWithInfo = JSON.stringify(gridWithInfo);
       const serializedGrid2 = JSON.stringify(grid2);
@@ -409,7 +414,7 @@ const PreGameBoard = ({ secondPlayer }) => {
       navigate(`/GameScreen?${queryParams.toString()}`, {
         state: { grid: serializedGrid, gridWithInfo: serializedGridWithInfo, grid2: serializedGrid2, gridWithInfo2: serializedGridWithInfo2 }
       });
-    } else {
+    } else if (!secondPlayerBoolean && placedShips.length === 4) {
       randomizeShips();
       const serializedGrid = JSON.stringify(grid);
       const serializedGridWithInfo = JSON.stringify(gridWithInfo);
@@ -429,7 +434,7 @@ const PreGameBoard = ({ secondPlayer }) => {
     <div>
       {!turnOfPlayer2 ? (
         <h3 className='turnInfoPos'>TURN OF PLAYER 1</h3>
-      ): (
+      ) : (
         <h3 className='turnInfoPos'>TURN OF PLAYER 2</h3>
       )}
       <div className='generalContainerGBoard'>
@@ -451,11 +456,11 @@ const PreGameBoard = ({ secondPlayer }) => {
             ))}
           </div>}
         {!turnOfPlayer2 && <div>
-          <FontAwesomeIcon icon={faRotate} onClick={handleRotateShips}/>
-          <SubmarineShip onDrag={(item) => handleDrag(item)} rotation={shipsRotation} />
-          <BoatShip onDrag={(item) => handleDrag(item)} rotation={shipsRotation} />
-          <CarrierShip onDrag={(item) => handleDrag(item)} rotation={shipsRotation} />
-          <CruiseShip onDrag={(item) => handleDrag(item)} rotation={shipsRotation} />
+          <FontAwesomeIcon icon={faRotate} onClick={handleRotateShips} />
+          <SubmarineShip onDrag={(item) => handleDrag(item)} rotation={shipsRotation} draggable={!placedShips.includes('submarine')} />
+          <BoatShip onDrag={(item) => handleDrag(item)} rotation={shipsRotation} draggable={!placedShips.includes('boat')} />
+          <CarrierShip onDrag={(item) => handleDrag(item)} rotation={shipsRotation} draggable={!placedShips.includes('carrier')} />
+          <CruiseShip onDrag={(item) => handleDrag(item)} rotation={shipsRotation} draggable={!placedShips.includes('cruise')} />
         </div>}
         {secondPlayerBoolean && turnOfPlayer2 && <div style={gridStyle}>
           {grid2.map((cell, index) => (
@@ -472,16 +477,16 @@ const PreGameBoard = ({ secondPlayer }) => {
           ))}
         </div>}
         {secondPlayerBoolean && turnOfPlayer2 && <div>
-          <FontAwesomeIcon icon={faRotate} onClick={handleRotateShips}/>
-          <SubmarineShip onDrag={(item) => handleDrag(item)} rotation={shipsRotation2} />
-          <BoatShip onDrag={(item) => handleDrag(item)} rotation={shipsRotation2} />
-          <CarrierShip onDrag={(item) => handleDrag(item)} rotation={shipsRotation2} />
-          <CruiseShip onDrag={(item) => handleDrag(item)} rotation={shipsRotation2} />
+          <FontAwesomeIcon icon={faRotate} onClick={handleRotateShips} />
+          <SubmarineShip onDrag={(item) => handleDrag(item)} rotation={shipsRotation2} draggable={!placedShips.includes('submarine')} />
+          <BoatShip onDrag={(item) => handleDrag(item)} rotation={shipsRotation2} draggable={!placedShips.includes('boat')} />
+          <CarrierShip onDrag={(item) => handleDrag(item)} rotation={shipsRotation2} draggable={!placedShips.includes('carrier')} />
+          <CruiseShip onDrag={(item) => handleDrag(item)} rotation={shipsRotation2} draggable={!placedShips.includes('cruise')} />
         </div>}
       </div>
       <div className='buttonsContainerPGB'>
         <Button onClick={handleClearBoard} text={"REMOVE SHIPS"} />
-        <Button onClick={navigateToNextScreen} text={"READY!"} />
+        {placedShips.length === 4 && <Button onClick={navigateToNextScreen} text={"READY!"} />}
       </div>
     </div>
   );
