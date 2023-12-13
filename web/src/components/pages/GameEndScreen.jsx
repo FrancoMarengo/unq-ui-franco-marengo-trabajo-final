@@ -36,8 +36,8 @@ const GameEndScreen = () => {
     const handlePlayAnotherMatchClick = () => {
         const queryParams = new URLSearchParams({
             twoPlayers: twoPlayersBool,
-          });
-          navigate(`/PreGameScreen?${queryParams.toString()}`);
+        });
+        navigate(`/PreGameScreen?${queryParams.toString()}`);
     }
 
     return (
@@ -49,8 +49,8 @@ const GameEndScreen = () => {
                     <h1>PLAYER 2 WINS, CONGRATULATIONS CAPTAIN</h1>
                 )}
                 <div className='buttonsContainerEnd'>
-                    <Button text={"RETURN TO HOME SCREEN"} onClick={handleGoToHomeScreenClick}/>
-                    <Button text={"PLAY ANOTHER MATCH"} onClick={handlePlayAnotherMatchClick}/>
+                    <Button text={"RETURN TO HOME SCREEN"} onClick={handleGoToHomeScreenClick} />
+                    <Button text={"PLAY ANOTHER MATCH"} onClick={handlePlayAnotherMatchClick} />
                 </div>
             </div>
         </div>

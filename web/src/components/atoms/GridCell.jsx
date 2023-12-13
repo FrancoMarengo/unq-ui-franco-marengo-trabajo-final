@@ -1,5 +1,6 @@
 import React from 'react';
 import { useDrop } from 'react-dnd';
+import './GridCell.css'
 
 const GridCell = ({ onDrop, onDragOver, children, isOccupied, isHighlighted }) => {
   const [, drop] = useDrop({
@@ -8,20 +9,15 @@ const GridCell = ({ onDrop, onDragOver, children, isOccupied, isHighlighted }) =
   });
 
   const backgroundColor = isOccupied
-  ? isHighlighted
-    ? 'rgba(255, 0, 0, 0.7)'
-    : 'rgba(197, 217, 240, 0.7)'  // Color cuando está solo ocupado
-  : isHighlighted ? 'rgba(144, 238, 144, 0.7)' : 'rgba(202, 226, 255, 0.3)'; // Color normal
+    ? isHighlighted
+      ? 'rgba(255, 0, 0, 0.7)'
+      : 'rgba(197, 217, 240, 0.7)'
+    : isHighlighted ? 'rgba(144, 238, 144, 0.7)' : 'rgba(202, 226, 255, 0.3)';
 
   return (
     <div
+      className='gridCell'
       style={{
-        width: '40px',
-        height: '40px',
-        border: '1px solid #F2E7FF',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
         backgroundColor: backgroundColor,
       }}
       ref={drop}

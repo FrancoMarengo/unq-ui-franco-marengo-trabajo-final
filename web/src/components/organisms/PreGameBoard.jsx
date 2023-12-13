@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import GridCell from '../atoms/GridCell';
 import BoatShip from '../molecules/BoatShip';
@@ -9,13 +9,6 @@ import Button from '../atoms/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRotate } from '@fortawesome/free-solid-svg-icons';
 import './PreGameBoard.css'
-
-const gridStyle = {
-  display: 'grid',
-  gridTemplateColumns: 'repeat(10, 40px)',
-  gridTemplateRows: 'repeat(10, 40px)',
-  gap: '1px',
-};
 
 const PreGameBoard = ({ secondPlayer }) => {
   const [grid, setGrid] = useState(Array(100).fill(null));
@@ -63,23 +56,19 @@ const PreGameBoard = ({ secondPlayer }) => {
   function checkValid(ship, index) {
     var start = 0;
     var end = 0;
-    var gridCellsWithShip = [];
     var check = true;
     if (ship.shipRotation === 0) {
       if ((index - ship.cellsToBack) % 10 !== 0) {
         if ((index + (ship.cellsToFront + 1)) % 10 === 0) {
           start = index - (ship.cellsToBack + 1);
           end = index + ship.cellsToFront;
-          gridCellsWithShip = Array.from({ length: end - start }, (_, index) => start + index + 1);
         } else {
           start = index - (ship.cellsToBack + 1);
           end = index + (ship.cellsToFront + 1);
-          gridCellsWithShip = Array.from({ length: end - start - 1 }, (_, index) => start + index + 1);
         };
       } else {
         start = index - ship.cellsToBack;
         end = index + (ship.cellsToFront + 1);
-        gridCellsWithShip = Array.from({ length: end - start }, (_, index) => start + index);
       };
       for (let i = start; i <= Math.min(end, 99); i++) {
         check = check && i <= 99 && i >= 0 && !gridWithInfo2[i].isOccupied
@@ -90,16 +79,13 @@ const PreGameBoard = ({ secondPlayer }) => {
         if ((index + 10 * ship.cellsToFront) / 10 >= 9) { //Toca la parte de abajo
           start = index - 10 * (ship.cellsToBack + 1);
           end = index + 10 * ship.cellsToFront;
-          gridCellsWithShip = Array.from({ length: (end - start - 10) / 10 + 1 }, (_, index) => start + 10 + index * 10);
         } else {
           start = index - 10 * (ship.cellsToBack + 1);
           end = index + 10 * (ship.cellsToFront + 1);
-          gridCellsWithShip = Array.from({ length: (end - start - 10) / 10 }, (_, index) => start + 10 + index * 10);
         };
       } else {
         start = index - 10 * ship.cellsToBack;
         end = index + 10 * (ship.cellsToFront + 1);
-        gridCellsWithShip = Array.from({ length: (end - start) / 10 }, (_, index) => start + index * 10);
       };
       for (let i = start; i <= end; i += 10) {
         check = check && i <= 99 && i >= 0 && !gridWithInfo2[i].isOccupied
@@ -159,7 +145,7 @@ const PreGameBoard = ({ secondPlayer }) => {
       };
 
       for (let i = start; i <= end; i += 10) {
-        if (i % 10 == 9) {
+        if (i % 10 === 9) {
           if (gridCellsWithShip.includes(i)) {
             newDeserializedGridWithInfo2[i] = { isOccupied: true, thereIsAShip: true }
             newDeserializedGridWithInfo2[i - 1] = { isOccupied: true, thereIsAShip: false }
@@ -167,7 +153,7 @@ const PreGameBoard = ({ secondPlayer }) => {
             newDeserializedGridWithInfo2[i] = { isOccupied: true, thereIsAShip: false }
             newDeserializedGridWithInfo2[i - 1] = { isOccupied: true, thereIsAShip: false }
           }
-        } else if (i % 10 == 0) {
+        } else if (i % 10 === 0) {
           if (gridCellsWithShip.includes(i)) {
             newDeserializedGridWithInfo2[i] = { isOccupied: true, thereIsAShip: true }
             newDeserializedGridWithInfo2[i + 1] = { isOccupied: true, thereIsAShip: false }
@@ -260,7 +246,7 @@ const PreGameBoard = ({ secondPlayer }) => {
         };
 
         for (let i = start; i <= end; i += 10) {
-          if (i % 10 == 9) {
+          if (i % 10 === 9) {
             if (gridCellsWithShip.includes(i)) {
               newgridWithInfo[i] = { isOccupied: true, thereIsAShip: true }
               newgridWithInfo[i - 1] = { isOccupied: true, thereIsAShip: false }
@@ -268,7 +254,7 @@ const PreGameBoard = ({ secondPlayer }) => {
               newgridWithInfo[i] = { isOccupied: true, thereIsAShip: false }
               newgridWithInfo[i - 1] = { isOccupied: true, thereIsAShip: false }
             }
-          } else if (i % 10 == 0) {
+          } else if (i % 10 === 0) {
             if (gridCellsWithShip.includes(i)) {
               newgridWithInfo[i] = { isOccupied: true, thereIsAShip: true }
               newgridWithInfo[i + 1] = { isOccupied: true, thereIsAShip: false }
@@ -317,7 +303,7 @@ const PreGameBoard = ({ secondPlayer }) => {
     }
 
     if (notOutOfGrid && notOccupiedrange) {
-      newGrid[index] = <img src={item.img} className={item.type} style={{ transform: `rotate(${shipsRotationNow}deg)` }} draggable={false} />;
+      newGrid[index] = <img src={item.img} alt={item.type} className={item.type} style={{ transform: `rotate(${shipsRotationNow}deg)` }} draggable={false} />;
       setOccupiedRange();
       const newPlacedShips = [...placedShips];
       newPlacedShips.push(item.type)
@@ -403,7 +389,7 @@ const PreGameBoard = ({ secondPlayer }) => {
     if (secondPlayerBoolean && !turnOfPlayer2 && placedShips.length === 4) {
       setPlacedShips([]);
       setTurnOfPlayer2(true);
-    } else if (secondPlayerBoolean && turnOfPlayer2 && placedShips.length == 4) {
+    } else if (secondPlayerBoolean && turnOfPlayer2 && placedShips.length === 4) {
       const serializedGrid = JSON.stringify(grid);
       const serializedGridWithInfo = JSON.stringify(gridWithInfo);
       const serializedGrid2 = JSON.stringify(grid2);
@@ -439,9 +425,9 @@ const PreGameBoard = ({ secondPlayer }) => {
       )}
       <div className='generalContainerGBoard'>
         {!turnOfPlayer2 &&
-          <div style={gridStyle}>
+          <div className='gridStyPGB'>
             {grid.map((cell, index) => (
-              <div>
+              <div key={index}>
                 <GridCell
                   key={index}
                   onDrop={(item) => handleDrop(item, index)}
@@ -450,7 +436,7 @@ const PreGameBoard = ({ secondPlayer }) => {
                   isHighlighted={highlightedCells.includes(index)}
                   disabled={turnOfPlayer2}
                 >
-                  {cell && !turnOfPlayer2 && <div className='imageContainerGameBoard'>{cell}</div>}
+                  {cell && !turnOfPlayer2 && <div key={index} className='imageContainerGameBoard'>{cell}</div>}
                 </GridCell>
               </div>
             ))}
@@ -462,16 +448,16 @@ const PreGameBoard = ({ secondPlayer }) => {
           <CarrierShip onDrag={(item) => handleDrag(item)} rotation={shipsRotation} draggable={!placedShips.includes('carrier')} />
           <CruiseShip onDrag={(item) => handleDrag(item)} rotation={shipsRotation} draggable={!placedShips.includes('cruise')} />
         </div>}
-        {secondPlayerBoolean && turnOfPlayer2 && <div style={gridStyle}>
+        {secondPlayerBoolean && turnOfPlayer2 && <div className='gridStyPGB'>
           {grid2.map((cell, index) => (
-            <div>
+            <div key={index}>
               <GridCell
                 key={index}
                 onDrop={(item) => handleDrop(item, index)}
                 onDragOver={() => handleDragOverCell(index)}
                 isOccupied={gridWithInfoP2[index].isOccupied || gridWithInfoP2[index].thereIsAShip}
                 isHighlighted={highlightedCells2.includes(index)}>
-                {cell && <div className='imageContainerGameBoard'>{cell}</div>}
+                {cell && <div key={index} className='imageContainerGameBoard'>{cell}</div>}
               </GridCell>
             </div>
           ))}

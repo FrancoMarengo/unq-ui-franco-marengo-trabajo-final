@@ -38,7 +38,6 @@ const HomeScreen = () => {
     navigate(`/PreGameScreen?${queryParams.toString()}`);
   };
 
-
   return (
     <DndProvider backend={HTML5Backend}>
       <div className='homeScreenContainer' style={{ height: screenHeight, width: screenWidth }}>
